@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - STORE</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Helvetica+Neue:wght@400;500;700;900&family=Oswald:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body>
+    <header class="header">
+        <div class="container header-inner">
+            <a class="logo" asp-controller="Home" asp-action="Index">
+                <svg class="logo-mark" viewBox="0 0 60 22" fill="currentColor" aria-hidden="true">
+                    <path d="M0 18C8 2 18 0 30 0s22 2 30 18H52C46 8 38 4 30 4S14 8 8 18H0z"/>
+                </svg>
+                <span class="logo-text">STORE</span>
+            </a>
+            <nav class="nav">
+                <a asp-controller="Home" asp-action="Index">Inicio</a>
+                <a asp-controller="Prendas" asp-action="Index">Prendas</a>
+                <a asp-controller="Categorias" asp-action="Index">Categorías</a>
+                <a asp-controller="Clientes" asp-action="Index">Clientes</a>
+                <a asp-controller="Empleados" asp-action="Index">Empleados</a>
+                <a asp-controller="Ventas" asp-action="Index">Ventas</a>
+                <a asp-controller="Ventas" asp-action="Create" class="btn-nav">Nueva Venta</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="main-content">
+        @await RenderSectionAsync("Hero", required: false)
+        <div class="container page-inner">
+            @if (TempData["Success"] != null)
+            {
+                <div class="alert alert-success">@TempData["Success"]</div>
+            }
+            @if (TempData["Error"] != null)
+            {
+                <div class="alert alert-error">@TempData["Error"]</div>
+            }
+            @RenderBody()
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container footer-inner">
+            <div class="footer-brand">
+                <span class="logo-text">STORE</span>
+                <p>Sistema de Control de Ventas — Harrison Feliz Alamo</p>
+            </div>
+            <div class="footer-links">
+                <a asp-controller="Prendas" asp-action="Index">Prendas</a>
+                <a asp-controller="Ventas" asp-action="Index">Ventas</a>
+                <a asp-controller="Clientes" asp-action="Index">Clientes</a>
+                <a asp-controller="Empleados" asp-action="Index">Empleados</a>
+            </div>
+            <p class="footer-copy">Prenda · Categoría · Venta · Cliente · Empleado</p>
+        </div>
+    </footer>
+
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

@@ -1,0 +1,116 @@
+@model Venta
+@{
+    ViewData["Title"] = $"Factura {Model.NumeroFactura}";
+    Layout = "_Layout";
+}
+
+<div class="no-print page-actions">
+    <div>
+        <h1>Factura</h1>
+    </div>
+    <div>
+        <button onclick="printInvoice()" class="btn btn-primary">Imprimir</button>
+        <a asp-action="Index" class="btn btn-secondary">Volver a ventas</a>
+    </div>
+</div>
+
+<div class="invoice">
+    <div class="invoice-header">
+        <div style="display: flex; align-items: center; gap: 1.5rem;">
+            <span style="font-size: 2.5rem;">&#128085;</span>
+            <div>
+                <h1>Tienda de Ropa</h1>
+                <p>Sistema de Control de Ventas</p>
+                <p style="font-size: .85rem; opacity: .8;">Harrison Feliz Alamo</p>
+            </div>
+        </div>
+        <div style="text-align: right;">
+            <div class="invoice-number">@Model.NumeroFactura</div>
+            <p>@Model.Fecha.ToString("dd/MM/yyyy HH:mm")</p>
+        </div>
+    </div>
+
+    <div class="invoice-body">
+        <div class="invoice-meta">
+            <div>
+                <h3>Cliente</h3>
+                @if (Model.Cliente != null)
+                {
+                    <p><strong>@Model.Cliente.NombreCompleto</strong></p>
+                    @if (!string.IsNullOrEmpty(Model.Cliente.Email))
+                    {
+                        <p>@Model.Cliente.Email</p>
+                    }
+                    @if (!string.IsNullOrEmpty(Model.Cliente.Telefono))
+                    {
+                        <p>Tel: @Model.Cliente.Telefono</p>
+                    }
+                    @if (!string.IsNullOrEmpty(Model.Cliente.Direccion))
+                    {
+                        <p>@Model.Cliente.Direccion</p>
+                    }
+                }
+                else
+                {
+                    <p><em>Sin cliente asignado</em></p>
+                }
+            </div>
+            <div>
+                <h3>Datos de factura</h3>
+                <p><strong>N° Factura:</strong> @Model.NumeroFactura</p>
+                <p><strong>Fecha:</strong> @Model.Fecha.ToString("dd/MM/yyyy")</p>
+                <p><strong>Hora:</strong> @Model.Fecha.ToString("HH:mm")</p>
+                @if (Model.Empleado != null)
+                {
+                    <p><strong>Empleado:</strong> @Model.Empleado.NombreCompleto</p>
+                }
+            </div>
+        </div>
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Prenda</th>
+                    <th>Talla</th>
+                    <th>Cant.</th>
+                    <th>P. Unit.</th>
+                    <th class="text-right">Subtotal</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var detalle in Model.DetalleVentas)
+                {
+                    <tr>
+                        <td>
+                            <div class="product-cell">
+                                @{
+                                    var catNombre = detalle.Prenda?.Categoria?.Nombre?.ToLower() ?? "";
+                                    var iconChar = catNombre.Contains("pantalon") ? "&#128086;"
+                                                 : catNombre.Contains("vestido") ? "&#128087;"
+                                                 : catNombre.Contains("chaqueta") || catNombre.Contains("abrigo") ? "&#129509;"
+                                                 : "&#128085;";
+                                }
+                                <span class="icon icon-sm icon-category">@Html.Raw(iconChar)</span>
+                                @detalle.Prenda?.Nombre
+                            </div>
+                        </td>
+                        <td>@(detalle.Prenda?.Talla ?? "—")</td>
+                        <td>@detalle.Cantidad</td>
+                        <td>$@detalle.PrecioUnitario.ToString("N2")</td>
+                        <td class="text-right">$@detalle.Subtotal.ToString("N2")</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        <div class="invoice-total">
+            <p style="color: var(--text-muted); margin-bottom: .25rem;">Total a pagar</p>
+            <div class="amount">$@Model.Total.ToString("N2")</div>
+        </div>
+    </div>
+
+    <div class="invoice-actions no-print">
+        <a asp-action="Create" class="btn btn-primary">Nueva venta</a>
+        <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-secondary">Ver detalle</a>
+    </div>
+</div>

@@ -1,0 +1,6 @@
+@tienda_ropa1_HostAddress = http://localhost:5170
+
+GET {{tienda_ropa1_HostAddress}}/
+Accept: text/html
+
+###

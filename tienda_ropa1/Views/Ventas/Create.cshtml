@@ -1,0 +1,81 @@
+@model VentaCreateViewModel
+@using tienda_ropa1.Models.ViewModels
+@{
+    ViewData["Title"] = "Nueva Venta";
+    var prendas = ViewBag.Prendas as IEnumerable<Prenda>;
+}
+
+<div class="page-header">
+    <h1>Registrar Venta</h1>
+    <p class="subtitle">Seleccione cliente y prendas para generar la factura</p>
+</div>
+
+<div class="form-card" style="max-width: 800px;">
+    <form asp-action="Create">
+        <div asp-validation-summary="All" class="alert alert-error"></div>
+
+        <div class="form-group">
+            <label asp-for="ClienteId"></label>
+            <select asp-for="ClienteId" asp-items="ViewBag.ClienteId" class="form-control">
+                <option value="">-- Sin cliente (opcional) --</option>
+            </select>
+            <span asp-validation-for="ClienteId"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="EmpleadoId"></label>
+            <select asp-for="EmpleadoId" asp-items="ViewBag.EmpleadoId" class="form-control">
+                <option value="">-- Seleccione un empleado --</option>
+            </select>
+            <span asp-validation-for="EmpleadoId"></span>
+        </div>
+
+        <h3 style="margin: 1.5rem 0 1rem; font-size: 1rem;">Prendas</h3>
+        <div id="detalle-items" class="detalle-items">
+            @for (var i = 0; i < Model.Items.Count; i++)
+            {
+                <div class="detalle-row">
+                    <div class="form-group">
+                        <label>Prenda</label>
+                        <select asp-for="Items[i].PrendaId" class="form-control">
+                            <option value="">-- Seleccione --</option>
+                            @if (prendas != null)
+                            {
+                                @foreach (var prenda in prendas)
+                                {
+                                    <option value="@prenda.Id">@prenda.Nombre (@(prenda.Talla ?? "")@(prenda.Color != null ? $" - {prenda.Color}" : "")) — $@prenda.Precio.ToString("N2") — Stock: @prenda.Stock</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Items[i].Cantidad"></label>
+                        <input asp-for="Items[i].Cantidad" class="form-control" type="number" min="1" />
+                    </div>
+                    <button type="button" class="btn-remove" onclick="removeDetalleRow(this)" title="Eliminar">&times;</button>
+                </div>
+            }
+        </div>
+
+        <button type="button" class="btn btn-secondary" onclick="addDetalleRow()" style="margin-top: .5rem;">+ Agregar prenda</button>
+
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Registrar venta y generar factura</button>
+            <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+<script>
+    window._prendasData = [
+        @if (prendas != null)
+        {
+            @foreach (var p in prendas)
+            {
+                <text>{ id: @p.Id, nombre: "@p.Nombre", precio: @p.Precio, stock: @p.Stock },</text>
+            }
+        }
+    ];
+</script>
+}

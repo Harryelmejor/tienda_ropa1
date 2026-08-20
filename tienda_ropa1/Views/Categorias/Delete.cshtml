@@ -1,0 +1,32 @@
+@model Categoria
+@{
+    ViewData["Title"] = "Eliminar Categoría";
+}
+
+<div class="page-header">
+    <h1>Eliminar Categoría</h1>
+</div>
+
+<div class="form-card">
+    <div class="alert alert-error">¿Está seguro de eliminar esta categoría?</div>
+    <div class="detail-grid">
+        <div class="detail-item"><label>Nombre</label><span>@Model.Nombre</span></div>
+        <div class="detail-item"><label>Descripción</label><span>@(Model.Descripcion ?? "—")</span></div>
+        <div class="detail-item"><label>Prendas asociadas</label><span>@Model.Prendas.Count</span></div>
+    </div>
+    @if (Model.Prendas.Any())
+    {
+        <p class="alert alert-error">Esta categoría tiene prendas asociadas y no puede eliminarse.</p>
+        <a asp-action="Index" class="btn btn-secondary">Volver</a>
+    }
+    else
+    {
+        <form asp-action="Delete" id="deleteForm">
+            <input type="hidden" asp-for="Id" />
+            <div class="form-actions">
+                <button type="button" class="btn btn-danger" onclick="confirmDelete(document.getElementById('deleteForm').action, '@Model.Nombre')">Confirmar eliminación</button>
+                <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+            </div>
+        </form>
+    }
+</div>

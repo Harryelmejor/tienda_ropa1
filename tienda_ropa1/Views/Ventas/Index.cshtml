@@ -1,0 +1,47 @@
+@model IEnumerable<Venta>
+@{
+    ViewData["Title"] = "Ventas";
+}
+
+<div class="page-actions">
+    <div>
+        <h1>Ventas</h1>
+        <p class="subtitle">Historial de ventas y facturación</p>
+    </div>
+    <a asp-action="Create" class="btn btn-primary">+ Nueva Venta</a>
+</div>
+
+<div class="card">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>N° Factura</th>
+                <th>Cliente</th>
+                <th>Empleado</th>
+                <th>Fecha</th>
+                <th>Total</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td><strong>@item.NumeroFactura</strong></td>
+                    <td>@(item.Cliente?.NombreCompleto ?? "—")</td>
+                    <td>@item.Empleado?.NombreCompleto</td>
+                    <td>@item.Fecha.ToString("dd/MM/yyyy HH:mm")</td>
+                    <td class="text-right">$@item.Total.ToString("N2")</td>
+                    <td>
+                        <a asp-action="Factura" asp-route-id="@item.Id" class="btn btn-primary btn-sm">Factura</a>
+                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-secondary btn-sm">Detalle</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    @if (!Model.Any())
+    {
+        <p class="empty-state">No hay ventas registradas. <a asp-action="Create">Registrar primera venta</a></p>
+    }
+</div>

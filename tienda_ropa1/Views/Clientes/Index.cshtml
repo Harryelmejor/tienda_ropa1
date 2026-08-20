@@ -1,0 +1,64 @@
+@model IEnumerable<Cliente>
+@{
+    ViewData["Title"] = "Clientes";
+}
+
+<div class="page-actions">
+    <div>
+        <h1>Clientes</h1>
+        <p class="subtitle">Registro de clientes de la tienda</p>
+    </div>
+    <a asp-action="Create" class="btn btn-primary">+ Nuevo Cliente</a>
+</div>
+
+<div class="card" style="padding: 1.25rem; margin-bottom: 1.5rem;">
+    <form method="get" class="search-bar">
+        <div class="form-group">
+            <label>Buscar</label>
+            <input type="text" name="buscar" value="@ViewBag.Buscar" class="form-control" placeholder="Nombre, apellido o email..." />
+        </div>
+        <button type="submit" class="btn btn-secondary">Buscar</button>
+    </form>
+</div>
+
+<div class="card">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Email</th>
+                <th>Telefono</th>
+                <th>Direccion</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        <div class="product-cell">
+                            <span class="icon icon-sm icon-dark">@item.Nombre[0]@item.Apellido[0]</span>
+                            <strong>@item.NombreCompleto</strong>
+                        </div>
+                    </td>
+                    <td>@(item.Email ?? "—")</td>
+                    <td>@(item.Telefono ?? "—")</td>
+                    <td>@(item.Direccion ?? "—")</td>
+                    <td>
+                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-secondary btn-sm">Ver</a>
+                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-secondary btn-sm">Editar</a>
+                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger btn-sm">Eliminar</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    @if (!Model.Any())
+    {
+        <div class="empty-state">
+            <div class="empty-icon">&#128100;</div>
+            <p>No se encontraron clientes.</p>
+        </div>
+    }
+</div>

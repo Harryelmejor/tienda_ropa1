@@ -1,0 +1,46 @@
+@model Prenda
+@{
+    ViewData["Title"] = "Detalle de Prenda";
+}
+
+<div class="page-actions">
+    <div>
+        <h1>@Model.Nombre</h1>
+        <p class="subtitle">@Model.Categoria?.Nombre</p>
+    </div>
+    <div>
+        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-secondary">Editar</a>
+        <a asp-action="Index" class="btn btn-secondary">Volver</a>
+    </div>
+</div>
+
+<div style="display: grid; grid-template-columns: 200px 1fr; gap: 2rem; margin-bottom: 2rem;">
+    <div class="card" style="display: flex; align-items: center; justify-content: center; padding: 2rem;">
+        @{
+            var catNombre = Model.Categoria?.Nombre?.ToLower() ?? "";
+            var iconChar = catNombre.Contains("pantalon") ? "&#128086;"
+                         : catNombre.Contains("vestido") ? "&#128087;"
+                         : catNombre.Contains("chaqueta") || catNombre.Contains("abrigo") ? "&#129509;"
+                         : "&#128085;";
+        }
+        <span class="icon icon-lg icon-category">@Html.Raw(iconChar)</span>
+    </div>
+    <div class="card" style="padding: 2rem;">
+        <div class="detail-grid" style="margin-bottom: 0;">
+            <div class="detail-item"><label>Nombre</label><span>@Model.Nombre</span></div>
+            <div class="detail-item"><label>Descripcion</label><span>@(Model.Descripcion ?? "—")</span></div>
+            <div class="detail-item"><label>Talla</label><span>@(Model.Talla ?? "—")</span></div>
+            <div class="detail-item"><label>Color</label><span>@(Model.Color ?? "—")</span></div>
+            <div class="detail-item"><label>Precio</label><span style="color: var(--success); font-size: 1.25rem;">$@Model.Precio.ToString("N2")</span></div>
+            <div class="detail-item">
+                <label>Stock</label>
+                <span>
+                    <span class="badge @(Model.Stock <= 5 ? "badge-danger badge-pulse" : Model.Stock <= 10 ? "badge-warning" : "badge-success")">
+                        @Model.Stock unidades
+                    </span>
+                </span>
+            </div>
+            <div class="detail-item"><label>Categoria</label><span>@Model.Categoria?.Nombre</span></div>
+        </div>
+    </div>
+</div>

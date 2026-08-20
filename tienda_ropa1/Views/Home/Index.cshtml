@@ -1,0 +1,143 @@
+@{
+    ViewData["Title"] = "Inicio";
+}
+
+@section Hero {
+<section class="hero" style="background: linear-gradient(135deg, #111 0%, #2a2a2a 50%, #111 100%);">
+    <div class="hero-content" style="display: grid; grid-template-columns: 1fr auto; gap: 3rem; align-items: center;">
+        <div>
+            <p class="hero-tag">Tienda de Ropa</p>
+            <h1 class="hero-title">CONTROL<br/>DE VENTAS</h1>
+            <p class="hero-sub">Inventario · Clientes · Facturacion</p>
+            <div class="hero-actions">
+                <a asp-controller="Ventas" asp-action="Create" class="btn btn-hero">Nueva Venta</a>
+                <a asp-controller="Prendas" asp-action="Index" class="btn btn-hero-outline">Ver Prendas</a>
+            </div>
+        </div>
+        <div class="hero-deco">
+            <div class="icon">&#128085;</div>
+            <div class="icon">&#128086;</div>
+            <div class="icon">&#9881;</div>
+            <div class="icon">&#128176;</div>
+        </div>
+    </div>
+</section>
+}
+
+<div class="page-body">
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-value">@ViewBag.TotalPrendas</div>
+            <div class="stat-label">Prendas</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value">@ViewBag.TotalClientes</div>
+            <div class="stat-label">Clientes</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value">@ViewBag.TotalVentas</div>
+            <div class="stat-label">Ventas</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value">@ViewBag.InventarioTotal</div>
+            <div class="stat-label">En inventario</div>
+        </div>
+    </div>
+
+    <div class="grid-2">
+        <section class="card">
+            <div class="card-header">
+                <h2>Ventas recientes</h2>
+                <a asp-controller="Ventas" asp-action="Index" class="link">Ver todas &rarr;</a>
+            </div>
+            @{
+                var ventasRecientes = ViewBag.VentasRecientes as IEnumerable<Venta>;
+            }
+            @if (ventasRecientes != null && ventasRecientes.Any())
+            {
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Factura</th>
+                            <th>Cliente</th>
+                            <th>Fecha</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var venta in ventasRecientes)
+                        {
+                            <tr>
+                                <td><a asp-controller="Ventas" asp-action="Factura" asp-route-id="@venta.Id">@venta.NumeroFactura</a></td>
+                                <td>@(venta.Cliente?.NombreCompleto ?? "—")</td>
+                                <td>@venta.Fecha.ToString("dd/MM/yyyy")</td>
+                                <td class="text-right">$@venta.Total.ToString("N2")</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <div class="empty-state">
+                    <div class="empty-icon">&#128176;</div>
+                    <p>No hay ventas registradas aun.</p>
+                </div>
+            }
+        </section>
+
+        <section class="card">
+            <div class="card-header">
+                <h2>Stock bajo</h2>
+                <a asp-controller="Prendas" asp-action="Index" class="link">Inventario &rarr;</a>
+            </div>
+            @{
+                var stockBajo = ViewBag.StockBajo as IEnumerable<Prenda>;
+            }
+            @if (stockBajo != null && stockBajo.Any())
+            {
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Prenda</th>
+                            <th>Talla</th>
+                            <th>Stock</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var prenda in stockBajo)
+                        {
+                            <tr class="@(prenda.Stock <= 5 ? "row-warning" : "")">
+                                <td>
+                                    <div class="product-cell">
+                                        <span class="icon icon-sm icon-warning">&#128085;</span>
+                                        <span class="product-cell-name">@prenda.Nombre</span>
+                                    </div>
+                                </td>
+                                <td>@(prenda.Talla ?? "—")</td>
+                                <td>
+                                    <span class="badge @(prenda.Stock <= 5 ? "badge-danger badge-pulse" : "badge-warning")">
+                                        @prenda.Stock
+                                    </span>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <div class="empty-state">
+                    <div class="empty-icon">&#9989;</div>
+                    <p>Inventario en niveles normales.</p>
+                </div>
+            }
+        </section>
+    </div>
+
+    <div class="quick-actions">
+        <a asp-controller="Prendas" asp-action="Create" class="action-btn">Registrar Prenda</a>
+        <a asp-controller="Clientes" asp-action="Create" class="action-btn">Registrar Cliente</a>
+        <a asp-controller="Ventas" asp-action="Create" class="action-btn action-btn-primary">Nueva Venta</a>
+    </div>
+</div>

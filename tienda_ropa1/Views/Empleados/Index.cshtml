@@ -1,0 +1,66 @@
+@model IEnumerable<Empleado>
+@{
+    ViewData["Title"] = "Empleados";
+}
+
+<div class="page-actions">
+    <div>
+        <h1>Empleados</h1>
+        <p class="subtitle">Gestion del personal de la tienda</p>
+    </div>
+    <a asp-action="Create" class="btn btn-primary">+ Nuevo Empleado</a>
+</div>
+
+<div class="card" style="padding: 1.25rem; margin-bottom: 1.5rem;">
+    <form method="get" class="search-bar">
+        <div class="form-group">
+            <label>Buscar</label>
+            <input type="text" name="buscar" value="@ViewBag.Buscar" class="form-control" placeholder="Nombre, apellido o cargo..." />
+        </div>
+        <button type="submit" class="btn btn-secondary">Buscar</button>
+    </form>
+</div>
+
+<div class="card">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Email</th>
+                <th>Telefono</th>
+                <th>Cargo</th>
+                <th>Ventas</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        <div class="product-cell">
+                            <span class="icon icon-sm icon-dark">@item.Nombre[0]@item.Apellido[0]</span>
+                            <strong>@item.NombreCompleto</strong>
+                        </div>
+                    </td>
+                    <td>@(item.Email ?? "—")</td>
+                    <td>@(item.Telefono ?? "—")</td>
+                    <td>@(item.Cargo ?? "—")</td>
+                    <td><span class="badge badge-info">@item.Ventas.Count</span></td>
+                    <td>
+                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-secondary btn-sm">Ver</a>
+                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-secondary btn-sm">Editar</a>
+                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger btn-sm">Eliminar</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    @if (!Model.Any())
+    {
+        <div class="empty-state">
+            <div class="empty-icon">&#9881;</div>
+            <p>No se encontraron empleados.</p>
+        </div>
+    }
+</div>

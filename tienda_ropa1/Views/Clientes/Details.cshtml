@@ -1,0 +1,49 @@
+@model Cliente
+@{
+    ViewData["Title"] = "Detalle de Cliente";
+}
+
+<div class="page-actions">
+    <div>
+        <h1>@Model.NombreCompleto</h1>
+        <p class="subtitle">@Model.Email</p>
+    </div>
+    <div>
+        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-secondary">Editar</a>
+        <a asp-action="Index" class="btn btn-secondary">Volver</a>
+    </div>
+</div>
+
+<div class="card" style="padding: 2rem; margin-bottom: 1.5rem;">
+    <div class="detail-grid">
+        <div class="detail-item"><label>Teléfono</label><span>@(Model.Telefono ?? "—")</span></div>
+        <div class="detail-item"><label>Dirección</label><span>@(Model.Direccion ?? "—")</span></div>
+        <div class="detail-item"><label>Total ventas</label><span>@Model.Ventas.Count</span></div>
+    </div>
+</div>
+
+@if (Model.Ventas.Any())
+{
+    <div class="card">
+        <div class="card-header"><h2>Historial de ventas</h2></div>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Factura</th>
+                    <th>Fecha</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var venta in Model.Ventas.OrderByDescending(v => v.Fecha))
+                {
+                    <tr>
+                        <td><a asp-controller="Ventas" asp-action="Factura" asp-route-id="@venta.Id">@venta.NumeroFactura</a></td>
+                        <td>@venta.Fecha.ToString("dd/MM/yyyy")</td>
+                        <td>$@venta.Total.ToString("N2")</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}

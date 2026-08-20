@@ -1,0 +1,39 @@
+@model Empleado
+@{
+    ViewData["Title"] = "Eliminar Empleado";
+}
+
+<div class="page-header">
+    <h1>Eliminar Empleado</h1>
+</div>
+
+<div class="form-card">
+    <div class="alert alert-error">Esta seguro de eliminar este empleado?</div>
+    <div class="detail-grid">
+        <div class="detail-item">
+            <label>Nombre</label>
+            <span style="display: flex; align-items: center; gap: .5rem;">
+                <span class="icon icon-sm icon-dark">@Model.Nombre[0]@Model.Apellido[0]</span>
+                @Model.NombreCompleto
+            </span>
+        </div>
+        <div class="detail-item"><label>Email</label><span>@(Model.Email ?? "—")</span></div>
+        <div class="detail-item"><label>Cargo</label><span>@(Model.Cargo ?? "—")</span></div>
+        <div class="detail-item"><label>Ventas</label><span>@Model.Ventas.Count</span></div>
+    </div>
+    @if (Model.Ventas.Any())
+    {
+        <p class="alert alert-error">Este empleado tiene ventas registradas y no puede eliminarse.</p>
+        <a asp-action="Index" class="btn btn-secondary">Volver</a>
+    }
+    else
+    {
+        <form asp-action="Delete" id="deleteForm">
+            <input type="hidden" asp-for="Id" />
+            <div class="form-actions">
+                <button type="button" class="btn btn-danger" onclick="confirmDelete(document.getElementById('deleteForm').action, '@Model.NombreCompleto')">Confirmar eliminacion</button>
+                <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+            </div>
+        </form>
+    }
+</div>

@@ -1,0 +1,46 @@
+@model Prenda
+@{
+    ViewData["Title"] = "Eliminar Prenda";
+}
+
+<div class="page-header">
+    <h1>Eliminar Prenda</h1>
+</div>
+
+<div class="form-card">
+    <div class="alert alert-error">Esta seguro de eliminar esta prenda?</div>
+    <div style="display: grid; grid-template-columns: 80px 1fr; gap: 1.5rem; margin-bottom: 1.5rem; align-items: start;">
+        @{
+            var catNombre = Model.Categoria?.Nombre?.ToLower() ?? "";
+            var iconChar = catNombre.Contains("pantalon") ? "&#128086;"
+                         : catNombre.Contains("vestido") ? "&#128087;"
+                         : catNombre.Contains("chaqueta") || catNombre.Contains("abrigo") ? "&#129509;"
+                         : "&#128085;";
+        }
+        <span class="icon icon-lg icon-category">@Html.Raw(iconChar)</span>
+        <div class="detail-grid" style="margin-bottom: 0;">
+            <div class="detail-item"><label>Nombre</label><span>@Model.Nombre</span></div>
+            <div class="detail-item"><label>Talla</label><span>@(Model.Talla ?? "—")</span></div>
+            <div class="detail-item"><label>Color</label><span>@(Model.Color ?? "—")</span></div>
+            <div class="detail-item"><label>Precio</label><span>$@Model.Precio.ToString("N2")</span></div>
+            <div class="detail-item"><label>Stock</label><span>@Model.Stock</span></div>
+            <div class="detail-item"><label>Categoria</label><span>@Model.Categoria?.Nombre</span></div>
+            <div class="detail-item"><label>Ventas asociadas</label><span>@Model.DetalleVentas.Count</span></div>
+        </div>
+    </div>
+    @if (Model.DetalleVentas.Any())
+    {
+        <p class="alert alert-error">Esta prenda tiene ventas registradas y no puede eliminarse.</p>
+        <a asp-action="Index" class="btn btn-secondary">Volver</a>
+    }
+    else
+    {
+        <form asp-action="Delete" id="deleteForm">
+            <input type="hidden" asp-for="Id" />
+            <div class="form-actions">
+                <button type="button" class="btn btn-danger" onclick="confirmDelete(document.getElementById('deleteForm').action, '@Model.Nombre')">Confirmar eliminacion</button>
+                <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+            </div>
+        </form>
+    }
+</div>

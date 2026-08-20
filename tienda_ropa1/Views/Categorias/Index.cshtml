@@ -1,0 +1,53 @@
+@model IEnumerable<Categoria>
+@{
+    ViewData["Title"] = "Categorias";
+}
+
+<div class="page-actions">
+    <div>
+        <h1>Categorias</h1>
+        <p class="subtitle">Clasificacion de prendas por tipo</p>
+    </div>
+    <a asp-action="Create" class="btn btn-primary">+ Nueva Categoria</a>
+</div>
+
+<div class="card">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Descripcion</th>
+                <th>Prendas</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.Id</td>
+                    <td>
+                        <div class="product-cell">
+                            @{
+                                var catNombre = item.Nombre.ToLower();
+                                var iconChar = catNombre.Contains("pantalon") ? "&#128086;"
+                                             : catNombre.Contains("vestido") ? "&#128087;"
+                                             : catNombre.Contains("chaqueta") || catNombre.Contains("abrigo") ? "&#129509;"
+                                             : "&#128085;";
+                            }
+                            <span class="icon icon-sm icon-category">@Html.Raw(iconChar)</span>
+                            <strong>@item.Nombre</strong>
+                        </div>
+                    </td>
+                    <td>@(item.Descripcion ?? "—")</td>
+                    <td><span class="badge badge-info">@item.Prendas.Count</span></td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-secondary btn-sm">Editar</a>
+                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger btn-sm">Eliminar</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
