@@ -180,6 +180,17 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 // ── Sale Detail Row Functions ──
+function buildPrendasOptions() {
+    if (window._prendasData && window._prendasData.length > 0) {
+        let html = '<option value="">-- Seleccione --</option>';
+        window._prendasData.forEach(p => {
+            html += `<option value="${p.id}">${p.nombre} ($${p.precio.toFixed(2)}) — Stock: ${p.stock}</option>`;
+        });
+        return html;
+    }
+    return '<option value="">-- Seleccione --</option>';
+}
+
 function addDetalleRow() {
     const container = document.getElementById('detalle-items');
     if (!container) return;
@@ -187,14 +198,14 @@ function addDetalleRow() {
     const rows = container.querySelectorAll('.detalle-row');
     const index = rows.length;
     const firstSelect = container.querySelector('select');
-    if (!firstSelect) return;
+    const optionsHtml = firstSelect ? firstSelect.innerHTML : buildPrendasOptions();
 
     const row = document.createElement('div');
     row.className = 'detalle-row';
     row.innerHTML = `
         <div class="form-group">
             <label>Prenda</label>
-            <select name="Items[${index}].PrendaId" class="form-control">${firstSelect.innerHTML}</select>
+            <select name="Items[${index}].PrendaId" class="form-control">${optionsHtml}</select>
         </div>
         <div class="form-group">
             <label>Cantidad</label>

@@ -28,7 +28,9 @@ public class VentasController : Controller
     public async Task<IActionResult> Create()
     {
         await LoadCreateViewBags();
-        return View(new VentaCreateDto());
+        var model = new VentaCreateDto();
+        model.Items.Add(new DetalleVentaCreateDto());
+        return View(model);
     }
 
     [HttpPost]
