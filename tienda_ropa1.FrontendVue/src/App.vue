@@ -1,0 +1,41 @@
+<template>
+    <header class="header">
+        <h1 class="logo">STORE</h1>
+        <nav class="nav">
+            <router-link to="/">Inicio</router-link>
+            <router-link to="/prendas">Prendas</router-link>
+            <router-link to="/clientes">Clientes</router-link>
+            <router-link to="/empleados">Empleados</router-link>
+            <router-link to="/ventas">Ventas</router-link>
+        </nav>
+    </header>
+    <main class="container">
+        <router-view />
+    </main>
+</template>
+
+<script setup lang="ts">
+</script>
+
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Helvetica Neue', Arial, sans-serif; background: #f5f5f5; }
+.header { background: #111; color: white; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; }
+.logo { font-family: 'Oswald', sans-serif; text-transform: uppercase; letter-spacing: .1em; font-size: 1.5rem; }
+.nav a { color: #aaa; text-decoration: none; margin-left: 1.5rem; font-size: .9rem; text-transform: uppercase; }
+.nav a:hover, .nav a.router-link-exact-active { color: white; }
+.container { max-width: 1100px; margin: 2rem auto; padding: 0 1rem; }
+.stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 2rem; }
+.stat-card { background: white; border-radius: 12px; padding: 1.5rem; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,.06); }
+.stat-value { font-family: 'Oswald', sans-serif; font-size: 2.5rem; font-weight: 700; }
+.stat-label { color: #888; text-transform: uppercase; font-size: .8rem; }
+h1 { font-family: 'Oswald', sans-serif; text-transform: uppercase; margin-bottom: 1.5rem; }
+table { width: 100%; border-collapse: collapse; background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,.06); }
+thead { background: #111; color: white; }
+th, td { padding: .75rem 1rem; text-align: left; }
+td { border-bottom: 1px solid #eee; }
+.badge { padding: .25rem .75rem; border-radius: 20px; font-size: .8rem; font-weight: 600; }
+.badge-success { background: #efe; color: #070; }
+.badge-warning { background: #ffe; color: #a60; }
+.badge-danger { background: #fde; color: #c00; }
+</style>

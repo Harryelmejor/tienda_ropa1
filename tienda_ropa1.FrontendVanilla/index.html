@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tienda Ropa - Vanilla JS + TypeScript</title>
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&family=Helvetica+Neue:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Helvetica Neue', sans-serif; background: #f5f5f5; }
+        .header { background: #111; color: white; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; }
+        .header h1 { font-family: 'Oswald', sans-serif; text-transform: uppercase; letter-spacing: .1em; }
+        .nav a { color: #aaa; text-decoration: none; margin-left: 1.5rem; font-size: .9rem; text-transform: uppercase; letter-spacing: .05em; }
+        .nav a:hover, .nav a.active { color: white; }
+        .container { max-width: 1100px; margin: 2rem auto; padding: 0 1rem; }
+        .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 2rem; }
+        .stat-card { background: white; border-radius: 12px; padding: 1.5rem; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,.06); }
+        .stat-value { font-family: 'Oswald', sans-serif; font-size: 2.5rem; font-weight: 700; }
+        .stat-label { color: #888; text-transform: uppercase; font-size: .8rem; letter-spacing: .05em; }
+        table { width: 100%; border-collapse: collapse; background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,.06); }
+        thead { background: #111; color: white; }
+        th { padding: .75rem 1rem; text-align: left; font-weight: 600; }
+        td { padding: .75rem 1rem; border-bottom: 1px solid #eee; }
+        .badge { padding: .25rem .75rem; border-radius: 20px; font-size: .8rem; font-weight: 600; }
+        .badge-success { background: #efe; color: #070; }
+        .badge-warning { background: #ffe; color: #a60; }
+        .badge-danger { background: #fde; color: #c00; }
+        .btn { padding: .5rem 1rem; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; }
+        .btn-primary { background: #111; color: white; }
+        .btn-secondary { background: #eee; color: #333; }
+        .btn-danger { background: #c00; color: white; }
+        .empty-state { text-align: center; padding: 3rem; background: white; border-radius: 12px; color: #888; }
+        .page-actions { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; }
+        .toast { position: fixed; top: 80px; right: 20px; padding: 1rem 1.5rem; background: #111; color: white; border-radius: 8px; z-index: 9999; animation: slideIn .3s; }
+        @keyframes slideIn { from { transform: translateX(100px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <h1>Store</h1>
+        <nav class="nav">
+            <a href="#dashboard" class="active" onclick="loadSection('dashboard')">Dashboard</a>
+            <a href="#prendas" onclick="loadSection('prendas')">Prendas</a>
+            <a href="#clientes" onclick="loadSection('clientes')">Clientes</a>
+            <a href="#empleados" onclick="loadSection('empleados')">Empleados</a>
+            <a href="#ventas" onclick="loadSection('ventas')">Ventas</a>
+        </nav>
+    </header>
+    <div class="container" id="app"></div>
+    <script src="dist/app.js"></script>
+</body>
+</html>

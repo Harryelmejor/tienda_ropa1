@@ -1,0 +1,138 @@
+@page "/clientes"
+@rendermode InteractiveServer
+@inject IClienteService ClienteService
+
+<PageTitle>Clientes - Tienda Ropa</PageTitle>
+
+<div style="max-width: 1000px; margin: 0 auto; padding: 2rem;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+        <h1 style="font-family: 'Oswald', sans-serif; text-transform: uppercase;">Clientes</h1>
+        <button class="btn btn-primary" @onclick="ShowCreate">+ Nuevo Cliente</button>
+    </div>
+
+    <div style="margin-bottom: 1rem;">
+        <input type="text" @bind="buscar" @bind:event="oninput" @onkeyup="LoadData" placeholder="Buscar..." style="padding: .5rem 1rem; border: 1px solid #ddd; border-radius: 6px; width: 300px;" />
+    </div>
+
+    @if (clientes == null)
+    {
+        <p>Cargando...</p>
+    }
+    else if (!clientes.Any())
+    {
+        <div style="text-align: center; padding: 3rem; background: #f9f9f9; border-radius: 12px;">
+            <p>No se encontraron clientes.</p>
+        </div>
+    }
+    else
+    {
+        <table style="width: 100%; border-collapse: collapse; background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,.06);">
+            <thead style="background: #111; color: white;">
+                <tr>
+                    <th style="padding: .75rem 1rem; text-align: left;">Nombre</th>
+                    <th style="padding: .75rem 1rem; text-align: left;">Email</th>
+                    <th style="padding: .75rem 1rem; text-align: left;">Telefono</th>
+                    <th style="padding: .75rem 1rem; text-align: center;">Ventas</th>
+                    <th style="padding: .75rem 1rem; text-align: center;">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var c in clientes)
+                {
+                    <tr style="border-bottom: 1px solid #eee;">
+                        <td style="padding: .75rem 1rem;">@c.NombreCompleto</td>
+                        <td style="padding: .75rem 1rem;">@(c.Email ?? "—")</td>
+                        <td style="padding: .75rem 1rem;">@(c.Telefono ?? "—")</td>
+                        <td style="padding: .75rem 1rem; text-align: center;">@c.CantidadVentas</td>
+                        <td style="padding: .75rem 1rem; text-align: center;">
+                            <button @onclick="() => EditCliente(c)" style="background: none; border: none; cursor: pointer; color: #555;">Editar</button>
+                            <button @onclick="() => DeleteCliente(c.Id)" style="background: none; border: none; cursor: pointer; color: #c00;">Eliminar</button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+
+    @if (showForm)
+    {
+        <div style="position: fixed; inset: 0; background: rgba(0,0,0,.4); display: flex; align-items: center; justify-content: center; z-index: 1000;">
+            <div style="background: white; border-radius: 12px; padding: 2rem; width: 450px; max-width: 90%;">
+                <h2 style="margin-bottom: 1.5rem;">@(editingId == null ? "Nuevo Cliente" : "Editar Cliente")</h2>
+                <EditForm Model="formModel" OnValidSubmit="SaveCliente">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+                        <div>
+                            <label style="display: block; font-weight: 600; margin-bottom: .25rem;">Nombre</label>
+                            <InputText @bind-Value="formModel.Nombre" style="width: 100%; padding: .5rem; border: 1px solid #ddd; border-radius: 6px;" />
+                        </div>
+                        <div>
+                            <label style="display: block; font-weight: 600; margin-bottom: .25rem;">Apellido</label>
+                            <InputText @bind-Value="formModel.Apellido" style="width: 100%; padding: .5rem; border: 1px solid #ddd; border-radius: 6px;" />
+                        </div>
+                    </div>
+                    <div style="margin-bottom: 1rem;">
+                        <label style="display: block; font-weight: 600; margin-bottom: .25rem;">Email</label>
+                        <InputText @bind-Value="formModel.Email" style="width: 100%; padding: .5rem; border: 1px solid #ddd; border-radius: 6px;" />
+                    </div>
+                    <div style="margin-bottom: 1rem;">
+                        <label style="display: block; font-weight: 600; margin-bottom: .25rem;">Telefono</label>
+                        <InputText @bind-Value="formModel.Telefono" style="width: 100%; padding: .5rem; border: 1px solid #ddd; border-radius: 6px;" />
+                    </div>
+                    <div style="margin-bottom: 1rem;">
+                        <label style="display: block; font-weight: 600; margin-bottom: .25rem;">Direccion</label>
+                        <InputText @bind-Value="formModel.Direccion" style="width: 100%; padding: .5rem; border: 1px solid #ddd; border-radius: 6px;" />
+                    </div>
+                    <div style="display: flex; gap: .75rem; justify-content: flex-end;">
+                        <button type="button" @onclick="CloseForm" style="padding: .5rem 1.5rem; border: 1px solid #ddd; border-radius: 6px; cursor: pointer;">Cancelar</button>
+                        <button type="submit" style="padding: .5rem 1.5rem; background: #111; color: white; border: none; border-radius: 6px; cursor: pointer;">Guardar</button>
+                    </div>
+                </EditForm>
+            </div>
+        </div>
+    }
+</div>
+
+@code {
+    private List<ClienteDto>? clientes;
+    private string buscar = "";
+    private bool showForm = false;
+    private int? editingId = null;
+
+    private ClienteCreateDto formModel = new();
+
+    protected override async Task OnInitializedAsync() => await LoadData();
+
+    private async Task LoadData() => clientes = await ClienteService.GetAllAsync(buscar);
+
+    private void ShowCreate()
+    {
+        editingId = null;
+        formModel = new ClienteCreateDto();
+        showForm = true;
+    }
+
+    private void EditCliente(ClienteDto c)
+    {
+        editingId = c.Id;
+        formModel = new ClienteCreateDto { Nombre = c.Nombre, Apellido = c.Apellido, Email = c.Email, Telefono = c.Telefono, Direccion = c.Direccion };
+        showForm = true;
+    }
+
+    private void CloseForm() => showForm = false;
+
+    private async Task SaveCliente()
+    {
+        if (editingId == null)
+            await ClienteService.CreateAsync(formModel);
+        else
+            await ClienteService.UpdateAsync(editingId.Value, formModel);
+        showForm = false;
+        await LoadData();
+    }
+
+    private async Task DeleteCliente(int id)
+    {
+        await ClienteService.DeleteAsync(id);
+        await LoadData();
+    }
+}

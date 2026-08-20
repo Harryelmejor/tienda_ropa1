@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using tienda_ropa1.Data;
-using tienda_ropa1.Models;
+using TiendaRopa.Data;
+using TiendaRopa.Shared.Models;
 
 namespace tienda_ropa1.Controllers;
 

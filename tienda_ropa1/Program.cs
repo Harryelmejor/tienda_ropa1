@@ -1,14 +1,12 @@
-using Microsoft.EntityFrameworkCore;
-using tienda_ropa1.Data;
+using TiendaRopa.Shared.Models;
+using TiendaRopa.Data;
+using TiendaRopa.Data.Repositories;
+using TiendaRopa.Shared.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllersWithViews();
-
-builder.Services.AddDbContext<TiendaDbContext>(options =>
-    options.UseSqlServer(
-        builder.Configuration.GetConnectionString("DefaultConnection")
-    ));
+builder.Services.AddDataLayer(builder.Configuration);
 
 var app = builder.Build();
 

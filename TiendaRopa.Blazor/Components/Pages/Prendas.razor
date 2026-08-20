@@ -1,0 +1,188 @@
+@page "/prendas"
+@rendermode InteractiveServer
+@inject IPrendaService PrendaService
+@inject ICategoriaService CategoriaService
+
+<PageTitle>Prendas - Tienda Ropa</PageTitle>
+
+<div style="max-width: 1000px; margin: 0 auto; padding: 2rem;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+        <h1 style="font-family: 'Oswald', sans-serif; text-transform: uppercase;">Prendas</h1>
+        <button class="btn btn-primary" @onclick="ShowCreate">+ Nueva Prenda</button>
+    </div>
+
+    <div style="margin-bottom: 1rem;">
+        <input type="text" @bind="buscar" @bind:event="oninput" @onkeyup="LoadData" placeholder="Buscar..." style="padding: .5rem 1rem; border: 1px solid #ddd; border-radius: 6px; width: 300px;" />
+    </div>
+
+    @if (prendas == null)
+    {
+        <p>Cargando...</p>
+    }
+    else if (!prendas.Any())
+    {
+        <div style="text-align: center; padding: 3rem; background: #f9f9f9; border-radius: 12px;">
+            <p>No se encontraron prendas.</p>
+        </div>
+    }
+    else
+    {
+        <table style="width: 100%; border-collapse: collapse; background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,.06);">
+            <thead style="background: #111; color: white;">
+                <tr>
+                    <th style="padding: .75rem 1rem; text-align: left;">Nombre</th>
+                    <th style="padding: .75rem 1rem; text-align: left;">Categoria</th>
+                    <th style="padding: .75rem 1rem; text-align: left;">Talla</th>
+                    <th style="padding: .75rem 1rem; text-align: right;">Precio</th>
+                    <th style="padding: .75rem 1rem; text-align: center;">Stock</th>
+                    <th style="padding: .75rem 1rem; text-align: center;">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var p in prendas)
+                {
+                    <tr style="border-bottom: 1px solid #eee;">
+                        <td style="padding: .75rem 1rem;">@p.Nombre</td>
+                        <td style="padding: .75rem 1rem;">@p.CategoriaNombre</td>
+                        <td style="padding: .75rem 1rem;">@(p.Talla ?? "—")</td>
+                        <td style="padding: .75rem 1rem; text-align: right;">$@p.Precio.ToString("N2")</td>
+                        <td style="padding: .75rem 1rem; text-align: center;">
+                            <span style="padding: .25rem .75rem; border-radius: 20px; font-size: .8rem; font-weight: 600; @(p.Stock <= 5 ? "background:#fde; color:#c00" : p.Stock <= 10 ? "background:#ffe; color:#a60" : "background:#efe; color:#070")">
+                                @p.Stock
+                            </span>
+                        </td>
+                        <td style="padding: .75rem 1rem; text-align: center;">
+                            <button @onclick="() => EditPrenda(p)" style="background: none; border: none; cursor: pointer; color: #555;">Editar</button>
+                            <button @onclick="() => DeletePrenda(p.Id)" style="background: none; border: none; cursor: pointer; color: #c00;">Eliminar</button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+
+    @if (showForm)
+    {
+        <div style="position: fixed; inset: 0; background: rgba(0,0,0,.4); display: flex; align-items: center; justify-content: center; z-index: 1000;">
+            <div style="background: white; border-radius: 12px; padding: 2rem; width: 450px; max-width: 90%;">
+                <h2 style="margin-bottom: 1.5rem;">@(editingId == null ? "Nueva Prenda" : "Editar Prenda")</h2>
+                <EditForm Model="formModel" OnValidSubmit="SavePrenda">
+                    <div style="margin-bottom: 1rem;">
+                        <label style="display: block; font-weight: 600; margin-bottom: .25rem;">Nombre</label>
+                        <InputText @bind-Value="formModel.Nombre" style="width: 100%; padding: .5rem; border: 1px solid #ddd; border-radius: 6px;" />
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+                        <div>
+                            <label style="display: block; font-weight: 600; margin-bottom: .25rem;">Precio</label>
+                            <InputNumber @bind-Value="formModel.Precio" style="width: 100%; padding: .5rem; border: 1px solid #ddd; border-radius: 6px;" />
+                        </div>
+                        <div>
+                            <label style="display: block; font-weight: 600; margin-bottom: .25rem;">Stock</label>
+                            <InputNumber @bind-Value="formModel.Stock" style="width: 100%; padding: .5rem; border: 1px solid #ddd; border-radius: 6px;" />
+                        </div>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+                        <div>
+                            <label style="display: block; font-weight: 600; margin-bottom: .25rem;">Talla</label>
+                            <InputText @bind-Value="formModel.Talla" style="width: 100%; padding: .5rem; border: 1px solid #ddd; border-radius: 6px;" />
+                        </div>
+                        <div>
+                            <label style="display: block; font-weight: 600; margin-bottom: .25rem;">Color</label>
+                            <InputText @bind-Value="formModel.Color" style="width: 100%; padding: .5rem; border: 1px solid #ddd; border-radius: 6px;" />
+                        </div>
+                    </div>
+                    <div style="margin-bottom: 1rem;">
+                        <label style="display: block; font-weight: 600; margin-bottom: .25rem;">Categoria</label>
+                        <InputSelect @bind-Value="formModel.CategoriaId" style="width: 100%; padding: .5rem; border: 1px solid #ddd; border-radius: 6px;">
+                            <option value="0">Seleccione...</option>
+                            @if (categorias != null)
+                            {
+                                @foreach (var c in categorias)
+                                {
+                                    <option value="@c.Id">@c.Nombre</option>
+                                }
+                            }
+                        </InputSelect>
+                    </div>
+                    <div style="margin-bottom: 1rem;">
+                        <label style="display: block; font-weight: 600; margin-bottom: .25rem;">Descripcion</label>
+                        <InputText @bind-Value="formModel.Descripcion" style="width: 100%; padding: .5rem; border: 1px solid #ddd; border-radius: 6px;" />
+                    </div>
+                    @if (!string.IsNullOrEmpty(errorMsg))
+                    {
+                        <p style="color: red; margin-bottom: 1rem;">@errorMsg</p>
+                    }
+                    <div style="display: flex; gap: .75rem; justify-content: flex-end;">
+                        <button type="button" @onclick="CloseForm" style="padding: .5rem 1.5rem; border: 1px solid #ddd; border-radius: 6px; cursor: pointer;">Cancelar</button>
+                        <button type="submit" style="padding: .5rem 1.5rem; background: #111; color: white; border: none; border-radius: 6px; cursor: pointer;">Guardar</button>
+                    </div>
+                </EditForm>
+            </div>
+        </div>
+    }
+</div>
+
+@code {
+    private List<PrendaDto>? prendas;
+    private List<CategoriaDto>? categorias;
+    private string buscar = "";
+    private bool showForm = false;
+    private int? editingId = null;
+    private string errorMsg = "";
+
+    private PrendaCreateDto formModel = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadData();
+        categorias = await CategoriaService.GetAllAsync();
+    }
+
+    private async Task LoadData()
+    {
+        prendas = await PrendaService.GetAllAsync(buscar);
+    }
+
+    private void ShowCreate()
+    {
+        editingId = null;
+        formModel = new PrendaCreateDto();
+        showForm = true;
+        errorMsg = "";
+    }
+
+    private void EditPrenda(PrendaDto p)
+    {
+        editingId = p.Id;
+        formModel = new PrendaCreateDto
+        {
+            Nombre = p.Nombre, Descripcion = p.Descripcion, Precio = p.Precio,
+            Stock = p.Stock, Talla = p.Talla, Color = p.Color, CategoriaId = p.CategoriaId
+        };
+        showForm = true;
+        errorMsg = "";
+    }
+
+    private void CloseForm() { showForm = false; errorMsg = ""; }
+
+    private async Task SavePrenda()
+    {
+        if (formModel.CategoriaId == 0) { errorMsg = "Seleccione una categoria."; return; }
+        try
+        {
+            if (editingId == null)
+                await PrendaService.CreateAsync(formModel);
+            else
+                await PrendaService.UpdateAsync(editingId.Value, formModel);
+            showForm = false;
+            await LoadData();
+        }
+        catch (Exception ex) { errorMsg = ex.Message; }
+    }
+
+    private async Task DeletePrenda(int id)
+    {
+        await PrendaService.DeleteAsync(id);
+        await LoadData();
+    }
+}

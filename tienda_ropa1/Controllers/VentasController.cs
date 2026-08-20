@@ -1,9 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using tienda_ropa1.Data;
-using tienda_ropa1.Models;
-using tienda_ropa1.Models.ViewModels;
+using TiendaRopa.Data;
+using TiendaRopa.Shared.Models;
+using TiendaRopa.Shared.DTOs;
 
 namespace tienda_ropa1.Controllers;
 
@@ -28,12 +28,12 @@ public class VentasController : Controller
     public async Task<IActionResult> Create()
     {
         await LoadCreateViewBags();
-        return View(new VentaCreateViewModel());
+        return View(new VentaCreateDto());
     }
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create(VentaCreateViewModel model)
+    public async Task<IActionResult> Create(VentaCreateDto model)
     {
         model.Items = model.Items.Where(i => i.PrendaId > 0).ToList();
 
