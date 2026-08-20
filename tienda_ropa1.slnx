@@ -1,3 +1,8 @@
 <Solution>
   <Project Path="tienda_ropa1/tienda_ropa1.csproj" />
+  <Project Path="TiendaRopa.Shared/TiendaRopa.Shared.csproj" />
+  <Project Path="TiendaRopa.Data/TiendaRopa.Data.csproj" />
+  <Project Path="TiendaRopa.Services/TiendaRopa.Services.csproj" />
+  <Project Path="TiendaRopa.Api/TiendaRopa.Api.csproj" />
+  <Project Path="TiendaRopa.Blazor/TiendaRopa.Blazor.csproj" />
 </Solution>

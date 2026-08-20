@@ -1,0 +1,12 @@
+{
+  "name": "tienda-ropa-frontend-vanilla",
+  "version": "1.0.0",
+  "description": "Tienda Ropa - Frontend Vanilla JS + TypeScript",
+  "scripts": {
+    "build": "tsc",
+    "start": "python -m http.server 3000"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0"
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "name": "tienda-ropa-frontend-vue",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "vite -p 3002",
+    "build": "vue-tsc --noEmit && vite build",
+    "preview": "vite preview -p 3002"
+  },
+  "dependencies": {
+    "vue": "^3.5.0",
+    "vue-router": "^4.4.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^5.0.0",
+    "typescript": "^5.0.0",
+    "vite": "^6.0.0",
+    "vue-tsc": "^2.0.0"
+  }
+}

@@ -14,4 +14,10 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\TiendaRopa.Services\TiendaRopa.Services.csproj" />
+    <ProjectReference Include="..\TiendaRopa.Data\TiendaRopa.Data.csproj" />
+    <ProjectReference Include="..\TiendaRopa.Shared\TiendaRopa.Shared.csproj" />
+  </ItemGroup>
+
 </Project>
