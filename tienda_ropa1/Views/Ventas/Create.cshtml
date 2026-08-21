@@ -72,7 +72,7 @@
         {
             @foreach (var p in prendas)
             {
-                <text>{ id: @p.Id, nombre: "@p.Nombre", precio: @p.Precio, stock: @p.Stock },</text>
+                <text>{ id: @p.Id, nombre: "@p.Nombre", precio: @p.Precio.ToString(System.Globalization.CultureInfo.InvariantCulture), stock: @p.Stock },</text>
             }
         }
     ];
